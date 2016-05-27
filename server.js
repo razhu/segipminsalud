@@ -96,38 +96,34 @@ apiRoutes.get('/personas', function(req, res) {
         var args = {
             headers: { "x-access-token": token }
         };
-        obtenerdatos(args);
-    }).on('error', function(err) {
-        console.log('No se pudo obtener el token. No se pudo conectar a la API Rest del aparato biometrico', err.request.options);
-        return;
-    });
-    // funcion obtener datos entre la ultima fecha actualizada y hoy.
-    function obtenerdatos(args) {
         //client.get(element + "segip/personas/6102948?fecha_nacimiento=06/04/1984", args, function(data, response) 
         client.get(element + "segip/personas/" + req.query.ci + "?fecha_nacimiento=" + req.query.fecha_nacimiento, args, function(data, response) {
-            guardardatos(data);
+            if (!data.success) {
+                res.status(400).json({ mensaje: "Error en la petición. Revise los parámetros" });
+            } else {
+
+                model.persona.findOrCreate
+                    ({
+                        where: {
+                            complemento_visible: data.persona.ComplementoVisible,
+                            numero_documento: data.persona.NumeroDocumento,
+                            complemento: data.persona.Complemento,
+                            nombres: data.persona.Nombres,
+                            primer_apellido: data.persona.PrimerApellido,
+                            segundo_apellido: data.persona.SegundoApellido,
+                            apellido_esposo: data.persona.ApellidoEsposo,
+                            domicilio: data.persona.Domicilio
+                        }
+                    });
+                res.status(201).json({ mensaje: "Se guardo el nuevo registro" });
+            }
         }).on('error', function(err) {
             console.log('No se pudo recuperar datos desde segip', err.request.options);
-        });
 
-        // fin recuperar ultima fecha de actualizacion
-    }
-    // funcion guardar datos        
-    function guardardatos(data) {
-        model.persona.findOrCreate
-            ({
-                where: {
-                    complemento_visible: data.persona.ComplementoVisible,
-                    numero_documento: data.persona.NumeroDocumento,
-                    complemento: data.persona.Complemento,
-                    nombres: data.persona.Nombres,
-                    primer_apellido: data.persona.PrimerApellido,
-                    segundo_apellido: data.persona.SegundoApellido,
-                    apellido_esposo: data.persona.ApellidoEsposo,
-                    domicilio: data.persona.Domicilio
-                }
-            });
-    }
+        });
+    }).on('error', function(err) {
+        console.log('No se pudo obtener el token desde segip', err.request.options);
+    });
 });
 //////////////////////////////////////////////// FIN RECUPERACION REGISTROS 
 
