@@ -4,7 +4,7 @@ var app = express();
 var Client = require('node-rest-client').Client;
 var client = new Client();
 var model = require('./models');// modelos
-var port = process.env.PORT || 8888;
+var port = process.env.PORT || 5000;
 //paquetes para api rest
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
@@ -99,7 +99,7 @@ apiRoutes.get('/personas', function(req, res) {
         //client.get(element + "segip/personas/6102948?fecha_nacimiento=06/04/1984", args, function(data, response) 
         client.get(element + "segip/personas/" + req.query.ci + "?fecha_nacimiento=" + req.query.fecha_nacimiento, args, function(data, response) {
             if (!data.success) {
-                res.status(400).json({ mensaje: "Error en la petición. Revise los parámetros" });
+                res.status(403).json({ mensaje: "Error en la petición. Revise los parámetros" });
             } else {
 
                 model.persona.findOrCreate
