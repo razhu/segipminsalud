@@ -118,11 +118,11 @@ apiRoutes.get('/personas', function(req, res) {
         var endpoint_tokens = result.endpoint_tokens;
         var endpoint_personas = result.endpoint_personas;
         var endpoint_fecha = result.endpoint_fecha;
+        // servicio del proxy adsib
         var args1 = {
             headers: { "Content-Type": "application/json" },
             data: { "usuario": "admin", "contrasena": "admin" }
         };
-        // autenticacion
         client.post(url + endpoint_base + endpoint_tokens, args1, function(data, response) {
             var token = data.token;
             var args = {
@@ -145,7 +145,7 @@ apiRoutes.get('/personas', function(req, res) {
                                 domicilio: data.persona.Domicilio
                             }
                         });
-                    res.status(201).json({ mensaje: "Se guardo el nuevo registro" });
+                    res.status(201).json(data);
                 }
             }).on('error', function(err) {
                 console.log('No se pudo recuperar datos desde segip', err.request.options);
@@ -154,6 +154,7 @@ apiRoutes.get('/personas', function(req, res) {
         }).on('error', function(err) {
             console.log('No se pudo obtener el token desde segip', err.request.options);
         });
+        //fin servicio del proxy adsib
     }).catch(e => {
         console.log(e);
     });
