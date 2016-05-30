@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     endpoint_base: DataTypes.STRING,
     endpoint_tokens: DataTypes.STRING,
     endpoint_personas: DataTypes.STRING,
+    endpoint_fecha: DataTypes.STRING,
   }, {
     classMethods: {
       associate: function(models) {

@@ -25,6 +25,9 @@ module.exports = {
             },
             endpoint_personas: {
                 type: Sequelize.STRING
+            }, 
+            endpoint_fecha: {
+                type: Sequelize.STRING
             },
             createdAt: {
                 allowNull: false,

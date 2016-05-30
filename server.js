@@ -81,6 +81,31 @@ apiRoutes.post('/tokens', function(req, res) {
 });
 //////////////////////////////////////////////// FIN AUTENTICACION 
 
+
+
+//////////////////////////////////////////////// INICIO MIDDLEWARE QUE VERIFICA EL TOKEN 
+apiRoutes.use(function(req, res, next) {
+    // busca un token en la cabecera o para metros de url o los parametros de POST 
+    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+    // decode token
+    if (token) {// verifica la palabra secreta y el periodo de expiracion del token
+        jwt.verify(token, app.get('superSecreto'), function(err, decoded) {
+            if (err) {
+                return res.status(401).json({ mensaje: 'Token o nombre de usuario inválidos.' });
+            } else {
+                // si todo esta bien, se almacena el token para su uso en otras rutas
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        // si no hay token, se muestra un error.
+        return res.status(403).send({
+            mensaje: 'Token no provisto'
+        });
+    }
+});
+//////////////////////////////////////////////// FIN MIDDLEWARE QUE VERIFICA EL TOKEN 
 //////////////////////////////////////////////// INICIO RECUPERACION REGISTROS 
 apiRoutes.get('/personas', function(req, res) {
     //model.segip.findAll({}).then().catch();
@@ -92,6 +117,7 @@ apiRoutes.get('/personas', function(req, res) {
         var endpoint_base = result.endpoint_base;
         var endpoint_tokens = result.endpoint_tokens;
         var endpoint_personas = result.endpoint_personas;
+        var endpoint_fecha = result.endpoint_fecha;
         var args1 = {
             headers: { "Content-Type": "application/json" },
             data: { "usuario": "admin", "contrasena": "admin" }
@@ -102,7 +128,7 @@ apiRoutes.get('/personas', function(req, res) {
             var args = {
                 headers: { "x-access-token": token }
             };
-            client.get(url + endpoint_base + endpoint_personas + req.query.ci + "?fecha_nacimiento=" + req.query.fecha_nacimiento, args, function(data, response) {
+            client.get(url + endpoint_base + endpoint_personas + req.query.ci + endpoint_fecha + req.query.fecha_nacimiento, args, function(data, response) {
                 if (!data.success) {
                     res.status(403).json({ mensaje: "Error en la petición. Revise los parámetros" });
                 } else {
@@ -134,31 +160,6 @@ apiRoutes.get('/personas', function(req, res) {
 
 });
 //////////////////////////////////////////////// FIN RECUPERACION REGISTROS 
-
-//////////////////////////////////////////////// INICIO MIDDLEWARE QUE VERIFICA EL TOKEN 
-apiRoutes.use(function(req, res, next) {
-    // busca un token en la cabecera o para metros de url o los parametros de POST 
-    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-    // decode token
-    if (token) {// verifica la palabra secreta y el periodo de expiracion del token
-        jwt.verify(token, app.get('superSecreto'), function(err, decoded) {
-            if (err) {
-                return res.status(401).json({ mensaje: 'Token o nombre de usuario inválidos.' });
-            } else {
-                // si todo esta bien, se almacena el token para su uso en otras rutas
-                req.decoded = decoded;
-                next();
-            }
-        });
-    } else {
-        // si no hay token, se muestra un error.
-        return res.status(403).send({
-            mensaje: 'Token no provisto'
-        });
-    }
-});
-//////////////////////////////////////////////// FIN MIDDLEWARE QUE VERIFICA EL TOKEN 
-
 
 //////////////////////////////////////////////// INICIO DECLARACION api/v1
 app.use('/api/v1', apiRoutes);
