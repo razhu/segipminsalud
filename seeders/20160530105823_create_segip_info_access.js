@@ -6,12 +6,18 @@ module.exports = {
         var usuario = 'admin';
         var contrasena = 'admin';
         var url = 'http://test.agetic.gob.bo/';
-        var endpoint = 'proxy/api/v1/segip/personas/';
+        var endpoint_base = 'proxy/api/v1/';
+        var endpoint_tokens = 'tokens';
+        var endpoint_personas = 'segip/personas/';
+        var endpoint_fecha = '?fecha_nacimiento=';
       return queryInterface.bulkInsert('segips', [{
         usuario: usuario,
         contrasena: bcrypt.hashSync(contrasena, 10),
         url:url,
-        endpoint:endpoint,
+        endpoint_base:endpoint_base,
+        endpoint_tokens:endpoint_tokens,
+        endpoint_personas:endpoint_personas,
+        endpoint_fecha:endpoint_fecha,
         createdAt: fecha,
         updatedAt: fecha
       }], {});
