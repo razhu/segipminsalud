@@ -83,46 +83,55 @@ apiRoutes.post('/tokens', function(req, res) {
 
 //////////////////////////////////////////////// INICIO RECUPERACION REGISTROS 
 apiRoutes.get('/personas', function(req, res) {
-    var element = "http://test.agetic.gob.bo/proxy/api/v1/";
-    //argumentos usuario y password para cada aparato biometrico
-    var args1 = {
-        headers: { "Content-Type": "application/json" },
-        data: { "usuario": "admin", "contrasena": "admin" }
-    };
-    // autenticacion
-    client.post(element + "tokens", args1, function(data, response) {
-        var token = data.token;
-        var args = {
-            headers: { "x-access-token": token }
+    //model.segip.findAll({}).then().catch();
+    model.segip.findOne({
+        order: 'id DESC'
+    }).then(result => {
+        //argumentos usuario y password para cada aparato biometrico
+        var url = result.url;
+        var endpoint_base = result.endpoint_base;
+        var endpoint_tokens = result.endpoint_tokens;
+        var endpoint_personas = result.endpoint_personas;
+        var args1 = {
+            headers: { "Content-Type": "application/json" },
+            data: { "usuario": "admin", "contrasena": "admin" }
         };
-        //client.get(element + "segip/personas/6102948?fecha_nacimiento=06/04/1984", args, function(data, response) 
-        client.get(element + "segip/personas/" + req.query.ci + "?fecha_nacimiento=" + req.query.fecha_nacimiento, args, function(data, response) {
-            if (!data.success) {
-                res.status(403).json({ mensaje: "Error en la petición. Revise los parámetros" });
-            } else {
+        // autenticacion
+        client.post(url + endpoint_base + endpoint_tokens, args1, function(data, response) {
+            var token = data.token;
+            var args = {
+                headers: { "x-access-token": token }
+            };
+            client.get(url + endpoint_base + endpoint_personas + req.query.ci + "?fecha_nacimiento=" + req.query.fecha_nacimiento, args, function(data, response) {
+                if (!data.success) {
+                    res.status(403).json({ mensaje: "Error en la petición. Revise los parámetros" });
+                } else {
+                    model.persona.findOrCreate
+                        ({
+                            where: {
+                                complemento_visible: data.persona.ComplementoVisible,
+                                numero_documento: data.persona.NumeroDocumento,
+                                complemento: data.persona.Complemento,
+                                nombres: data.persona.Nombres,
+                                primer_apellido: data.persona.PrimerApellido,
+                                segundo_apellido: data.persona.SegundoApellido,
+                                apellido_esposo: data.persona.ApellidoEsposo,
+                                domicilio: data.persona.Domicilio
+                            }
+                        });
+                    res.status(201).json({ mensaje: "Se guardo el nuevo registro" });
+                }
+            }).on('error', function(err) {
+                console.log('No se pudo recuperar datos desde segip', err.request.options);
 
-                model.persona.findOrCreate
-                    ({
-                        where: {
-                            complemento_visible: data.persona.ComplementoVisible,
-                            numero_documento: data.persona.NumeroDocumento,
-                            complemento: data.persona.Complemento,
-                            nombres: data.persona.Nombres,
-                            primer_apellido: data.persona.PrimerApellido,
-                            segundo_apellido: data.persona.SegundoApellido,
-                            apellido_esposo: data.persona.ApellidoEsposo,
-                            domicilio: data.persona.Domicilio
-                        }
-                    });
-                res.status(201).json({ mensaje: "Se guardo el nuevo registro" });
-            }
+            });
         }).on('error', function(err) {
-            console.log('No se pudo recuperar datos desde segip', err.request.options);
-
+            console.log('No se pudo obtener el token desde segip', err.request.options);
         });
-    }).on('error', function(err) {
-        console.log('No se pudo obtener el token desde segip', err.request.options);
+    }).catch(e => {
+        console.log(e);
     });
+
 });
 //////////////////////////////////////////////// FIN RECUPERACION REGISTROS 
 
