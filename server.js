@@ -9,6 +9,7 @@ var port = process.env.PORT || 5000;
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var jwt = require('jsonwebtoken'); // para crear, firmar, y verificar tokens
+var config2 = require('./config/config2');
 var cors = require('cors');
 var bcrypt = require('bcrypt');
 // para base64
@@ -27,14 +28,12 @@ var validate = validator({
         }
     }
 });
-//////////////////////////////////////////////// RECUPERAR DATOS DE config/constantes.js
-
 //////////////////////////////////////////////// CONFIGURACION
 // usamos body parser para obtener info de los parametros via POST
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // secret para jwt
-//app.set('superSecreto', config2.secret); // variable secreta
+app.set('superSecreto', config2.secret); // variable secreta
 // usamos morgan para imprimir logs en development
 app.use(morgan('dev'));
 //////////////////////////////////////////////// RUTAS
