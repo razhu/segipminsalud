@@ -120,6 +120,8 @@ apiRoutes.get('/personas', function(req, res) {
                     var endpoint_tokens = result.endpoint_tokens;
                     var endpoint_personas = result.endpoint_personas;
                     var endpoint_fecha = result.endpoint_fecha;
+                    var admin_segip = result.usuario;
+                    var pass_segip = result.contrasena;
                     // servicio del proxy adsib
                     var args1 = {
                         headers: { "Content-Type": "application/json" },
