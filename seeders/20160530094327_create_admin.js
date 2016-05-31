@@ -5,7 +5,7 @@ module.exports = {
         var fecha = new Date();
         var usuario = 'admin';
         var contrasena = 'admin'
-      return queryInterface.bulkInsert('usuarios', [{
+      return queryInterface.bulkInsert('apiusuarios', [{
         usuario: usuario,
         contrasena: bcrypt.hashSync(contrasena, 10),
         createdAt: fecha,
