@@ -83,7 +83,7 @@ apiRoutes.post('/tokens', function(req, res) {
 //////////////////////////////////////////////// INICIO RECUPERACION REGISTROS 
 apiRoutes.get('/personas', function(req, res) {
     model.persona.findOne({
-        attributes: ["complemento_visible", "numero_documento", "complemento", "nombres", "primer_apellido", "segundo_apellido", "apellido_esposo", "domicilio", "fecha_nacimiento"], 
+        attributes: ["id", "complemento_visible", "numero_documento", "complemento", "nombres", "primer_apellido", "segundo_apellido", "apellido_esposo", "domicilio", "fecha_nacimiento"],
         where: {
             numero_documento: req.query.ci,
             fecha_nacimiento: req.query.fecha_nacimiento
@@ -131,20 +131,11 @@ apiRoutes.get('/personas', function(req, res) {
                                         domicilio: data.persona.Domicilio,
                                         fecha_nacimiento: req.query.fecha_nacimiento
                                     }
+                                }).then(result => {
+                                    res.status(201).json(result[0]);
                                 });
-                            res.status(201).json(
-                                {
-                                    "complemento_visible": data.persona.ComplementoVisible,
-                                    "numero_documento": data.persona.NumeroDocumento,
-                                    "complemento": data.persona.Complemento,
-                                    "nombres": data.persona.Nombres,
-                                    "primer_apellido": data.persona.PrimerApellido,
-                                    "segundo_apellido": data.persona.SegundoApellido,
-                                    "apellido_esposo": data.persona.ApellidoEsposo,
-                                    "domicilio": data.persona.Domicilio,
-                                    "fecha_nacimiento": req.query.fecha_nacimiento
-                                }
-                            );
+
+
                         }
                     }).on('error', function(err) {
                         console.log('No se pudo recuperar datos desde segip', err.request.options);
