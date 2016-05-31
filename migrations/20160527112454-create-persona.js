@@ -2,19 +2,16 @@
 module.exports = {
     up: function(queryInterface, Sequelize) {
         return queryInterface.createTable('personas', {
-            id: {
+            id_persona: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            complemento_visible: {
+            documento_identidad: {
                 type: Sequelize.STRING
             },
-            numero_documento: {
-                type: Sequelize.STRING
-            },
-            complemento: {
+            complemento_documento: {
                 type: Sequelize.STRING
             },
             nombres: {
@@ -26,20 +23,17 @@ module.exports = {
             segundo_apellido: {
                 type: Sequelize.STRING
             },
-            apellido_esposo: {
-                type: Sequelize.STRING
-            },
-            domicilio: {
+            casada_apellido: {
                 type: Sequelize.STRING
             },
             fecha_nacimiento: {
                 type: Sequelize.STRING
             },
-            createdAt: {
+            fecha_creacion: {
                 allowNull: false,
                 type: Sequelize.DATE
             },
-            updatedAt: {
+            fecha_modificacion: {
                 allowNull: false,
                 type: Sequelize.DATE
             }

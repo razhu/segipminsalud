@@ -81,9 +81,9 @@ apiRoutes.post('/tokens', function(req, res) {
 //////////////////////////////////////////////// INICIO RECUPERACION REGISTROS 
 apiRoutes.get('/personas', function(req, res) {
     model.persona.findOne({
-        attributes: ["id", "complemento_visible", "numero_documento", "complemento", "nombres", "primer_apellido", "segundo_apellido", "apellido_esposo", "domicilio", "fecha_nacimiento"],
+        attributes: ["id_persona", "documento_identidad", "complemento_documento", "nombres", "primer_apellido", "segundo_apellido", "casada_apellido", "fecha_nacimiento"],
         where: {
-            numero_documento: req.query.ci,
+            documento_identidad: req.query.ci,
             fecha_nacimiento: req.query.fecha_nacimiento
         }
     }).then(result => {
@@ -115,30 +115,27 @@ apiRoutes.get('/personas', function(req, res) {
                         if (!data.success) {
                             res.status(403).json({ mensaje: "Error en la petición. Revise los parámetros" });
                         } else {
+
                             model.persona.findOrCreate
                                 ({
                                     where: {
-                                        complemento_visible: data.persona.ComplementoVisible,
-                                        numero_documento: data.persona.NumeroDocumento,
-                                        complemento: data.persona.Complemento,
+                                        documento_identidad: data.persona.NumeroDocumento,
+                                        complemento_documento: data.persona.Complemento,
                                         nombres: data.persona.Nombres,
                                         primer_apellido: data.persona.PrimerApellido,
                                         segundo_apellido: data.persona.SegundoApellido,
-                                        apellido_esposo: data.persona.ApellidoEsposo,
-                                        domicilio: data.persona.Domicilio,
+                                        casada_apellido: data.persona.ApellidoEsposo,
                                         fecha_nacimiento: req.query.fecha_nacimiento
                                     }
                                 }).then(result => {
                                     res.status(201).json({
-                                        "id": result[0].id,
-                                        "complemento_visible": result[0].complemento_visible,
-                                        "numero_documento": result[0].numero_documento,
-                                        "complemento": result[0].complemento,
+                                        "id_persona": result[0].id_persona,
+                                        "documento_identidad": result[0].documento_identidad,
+                                        "complemento_documento": result[0].complemento_documento,
                                         "nombres": result[0].nombres,
                                         "primer_apellido": result[0].primer_apellido,
                                         "segundo_apellido": result[0].segundo_apellido,
-                                        "apellido_esposo": result[0].apellido_esposo,
-                                        "domicilio": result[0].domicilio,
+                                        "casada_apellido": result[0].casada_apellido,
                                         "fecha_nacimiento": result[0].fecha_nacimiento
                                     });
                                 });
