@@ -45,7 +45,7 @@ app.get('/', function(req, res) {
 var apiRoutes = express.Router();
 //////////////////////////////////////////////// INICIO AUTENTICACION (no se requiere middleware pues no es una ruta protegida)
 apiRoutes.post('/tokens', function(req, res) {
-    model.usuario.findOne({
+    model.apiusuario.findOne({
         where: { usuario: req.body.usuario }
     }).then(function(usuario) {
         if (!validate({ checkpresence: req.body.usuario })) {
