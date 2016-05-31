@@ -119,7 +119,7 @@ apiRoutes.get('/personas', function(req, res) {
             model.segip.findOne({
                 order: 'id DESC'
             }).then(result => {
-                //argumentos usuario y password para cada aparato biometrico
+                //argumentos usuario y password para consultar al segip
                 var url = result.url;
                 var endpoint_base = result.endpoint_base;
                 var endpoint_tokens = result.endpoint_tokens;
@@ -127,10 +127,10 @@ apiRoutes.get('/personas', function(req, res) {
                 var endpoint_fecha = result.endpoint_fecha;
                 var admin_segip = result.usuario;
                 var pass_segip = result.contrasena;
-                // servicio del proxy adsib
+                // servicio del proxy adsib para segip
                 var args1 = {
                     headers: { "Content-Type": "application/json" },
-                    data: { "usuario": "admin", "contrasena": "admin" }
+                    data: { "usuario": admin_segip, "contrasena": utf8.decode(base64.decode(pass_segip)) }
                 };
                 client.post(url + endpoint_base + endpoint_tokens, args1, function(data, response) {
                     var token = data.token;
