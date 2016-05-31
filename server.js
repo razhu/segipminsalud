@@ -1,4 +1,3 @@
-//////////////////////////////////////////////// OBTENER PAQUETES
 var express = require('express');
 var app = express();
 var Client = require('node-rest-client').Client;
@@ -37,7 +36,6 @@ app.set('superSecreto', config2.secret); // variable secreta
 // usamos morgan para imprimir logs en development
 app.use(morgan('dev'));
 //////////////////////////////////////////////// RUTAS
-// ruta basica (http://localhost:8081)
 app.get('/', function(req, res) {
     res.header('Content-Type', 'application/json');
     res.status(403).json({ mensaje: 'Token no provisto' });
@@ -92,7 +90,6 @@ apiRoutes.get('/personas', function(req, res) {
         if (result != null) {
             res.status(200).json(result)
         } else {
-            //model.segip.findAll({}).then().catch();
             model.segip.findOne({
                 order: 'id DESC'
             }).then(result => {
