@@ -134,8 +134,6 @@ apiRoutes.get('/personas', function(req, res) {
                                 }).then(result => {
                                     res.status(201).json(result[0]);
                                 });
-
-
                         }
                     }).on('error', function(err) {
                         console.log('No se pudo recuperar datos desde segip', err.request.options);
