@@ -129,7 +129,18 @@ apiRoutes.get('/personas', function(req, res) {
                                         fecha_nacimiento: req.query.fecha_nacimiento
                                     }
                                 }).then(result => {
-                                    res.status(201).json(result[0]);
+                                    res.status(201).json({
+                                        "id": result[0].id,
+                                        "complemento_visible": result[0].complemento_visible,
+                                        "numero_documento": result[0].numero_documento,
+                                        "complemento": result[0].complemento,
+                                        "nombres": result[0].nombres,
+                                        "primer_apellido": result[0].primer_apellido,
+                                        "segundo_apellido": result[0].segundo_apellido,
+                                        "apellido_esposo": result[0].apellido_esposo,
+                                        "domicilio": result[0].domicilio,
+                                        "fecha_nacimiento": result[0].fecha_nacimiento
+                                    });
                                 });
                         }
                     }).on('error', function(err) {
