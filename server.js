@@ -80,33 +80,10 @@ apiRoutes.post('/tokens', function(req, res) {
     });
 });
 //////////////////////////////////////////////// FIN AUTENTICACION 
-
-//////////////////////////////////////////////// INICIO MIDDLEWARE QUE VERIFICA EL TOKEN 
-apiRoutes.use(function(req, res, next) {
-    // busca un token en la cabecera o para metros de url o los parametros de POST 
-    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
-    // decode token
-    if (token) {// verifica la palabra secreta y el periodo de expiracion del token
-        jwt.verify(token, app.get('superSecreto'), function(err, decoded) {
-            if (err) {
-                return res.status(401).json({ mensaje: 'Token o nombre de usuario inválidos.' });
-            } else {
-                // si todo esta bien, se almacena el token para su uso en otras rutas
-                req.decoded = decoded;
-                next();
-            }
-        });
-    } else {
-        // si no hay token, se muestra un error.
-        return res.status(403).send({
-            mensaje: 'Token no provisto'
-        });
-    }
-});
-//////////////////////////////////////////////// FIN MIDDLEWARE QUE VERIFICA EL TOKEN 
 //////////////////////////////////////////////// INICIO RECUPERACION REGISTROS 
 apiRoutes.get('/personas', function(req, res) {
     model.persona.findOne({
+        attributes: ["complemento_visible", "numero_documento", "complemento", "nombres", "primer_apellido", "segundo_apellido", "apellido_esposo", "domicilio", "fecha_nacimiento"], 
         where: {
             numero_documento: req.query.ci,
             fecha_nacimiento: req.query.fecha_nacimiento
@@ -155,7 +132,19 @@ apiRoutes.get('/personas', function(req, res) {
                                         fecha_nacimiento: req.query.fecha_nacimiento
                                     }
                                 });
-                            res.status(201).json(data);
+                            res.status(201).json(
+                                {
+                                    "complemento_visible": data.persona.ComplementoVisible,
+                                    "numero_documento": data.persona.NumeroDocumento,
+                                    "complemento": data.persona.Complemento,
+                                    "nombres": data.persona.Nombres,
+                                    "primer_apellido": data.persona.PrimerApellido,
+                                    "segundo_apellido": data.persona.SegundoApellido,
+                                    "apellido_esposo": data.persona.ApellidoEsposo,
+                                    "domicilio": data.persona.Domicilio,
+                                    "fecha_nacimiento": req.query.fecha_nacimiento
+                                }
+                            );
                         }
                     }).on('error', function(err) {
                         console.log('No se pudo recuperar datos desde segip', err.request.options);
@@ -175,6 +164,31 @@ apiRoutes.get('/personas', function(req, res) {
     });
 });
 //////////////////////////////////////////////// FIN RECUPERACION REGISTROS 
+
+//////////////////////////////////////////////// INICIO MIDDLEWARE QUE VERIFICA EL TOKEN 
+apiRoutes.use(function(req, res, next) {
+    // busca un token en la cabecera o para metros de url o los parametros de POST 
+    var token = req.body.token || req.param('token') || req.headers['x-access-token'];
+    // decode token
+    if (token) {// verifica la palabra secreta y el periodo de expiracion del token
+        jwt.verify(token, app.get('superSecreto'), function(err, decoded) {
+            if (err) {
+                return res.status(401).json({ mensaje: 'Token o nombre de usuario inválidos.' });
+            } else {
+                // si todo esta bien, se almacena el token para su uso en otras rutas
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        // si no hay token, se muestra un error.
+        return res.status(403).send({
+            mensaje: 'Token no provisto'
+        });
+    }
+});
+//////////////////////////////////////////////// FIN MIDDLEWARE QUE VERIFICA EL TOKEN 
+
 
 //////////////////////////////////////////////// INICIO DECLARACION api/v1
 app.use('/api/v1', apiRoutes);
