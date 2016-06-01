@@ -36,6 +36,54 @@ module.exports = {
             fecha_modificacion: {
                 allowNull: false,
                 type: Sequelize.DATE
+            },
+            sexo: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            id_localidad_nacimiento: {
+                allowNull: true,
+                type: Sequelize.INTEGER
+            },
+            gestion: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            oficialia: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            partida: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            libro: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            folio: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            estado: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            usuario_creacion: {
+                allowNull: true,
+                type: Sequelize.DATE
+            },
+            usuario_modificacion: {
+                allowNull: true,
+                type: Sequelize.DATE
+            },
+            par_tipo_documento_identidad: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
+            par_lugar_expedido: {
+                allowNull: true,
+                type: Sequelize.STRING
             }
         });
     },
